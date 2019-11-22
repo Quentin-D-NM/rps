@@ -19,8 +19,8 @@ public class Arena {
   }
 
   public void init() {
-    for(int row = 0; row < arenaSize; row++) {
-      for(int col = 0; col < arenaSize; col++) {
+    for (int row = 0; row < arenaSize; row++) {
+      for (int col = 0; col < arenaSize; col++) {
         terrain[row][col] = (byte) rng.nextInt(numBreeds);
       }
     }
@@ -33,13 +33,13 @@ public class Arena {
         int challengerCol = rng.nextInt(arenaSize);
         byte challenger = terrain[challengerRow][challengerCol];
         Direction direction = Direction.random(rng);
-        int defenderRow = wrap(challengerRow + direction.getRowOffSet());
-        int defenderCol = wrap(challengerCol + direction.getColumnOffSet());
+        int defenderRow = wrap(challengerRow + direction.getRowOffset());
+        int defenderCol = wrap(challengerCol + direction.getColumnOffset());
         byte defender = terrain[defenderRow][defenderCol];
         int comparison = compare(challenger, defender);
         if (comparison > 0) {
           terrain[defenderRow][defenderCol] = challenger;
-        } else if (comparison < 0){
+        } else if (comparison < 0) {
           terrain[challengerRow][challengerCol] = defender;
         }
       }
@@ -49,7 +49,7 @@ public class Arena {
   public byte[][] getTerrain() {
     byte[][] safeCopy = new byte[arenaSize][];
     synchronized (lock) {
-      for(int row = 0; row < arenaSize; row++) {
+      for (int row = 0; row < arenaSize; row++) {
         safeCopy[row] = Arrays.copyOf(terrain[row], arenaSize);
       }
     }
@@ -65,13 +65,13 @@ public class Arena {
     return (value >= 0) ? value : value + arenaSize;
   }
 
-  private int compare(byte cellOne,  byte cellTwo) {
+  private int compare(byte cell1, byte cell2) {
     int comparison;
-    if (cellOne == cellTwo) {
+    if (cell1 == cell2) {
       comparison = 0;
     } else {
-      int distanceClockwise = (cellTwo - cellOne + numBreeds) % numBreeds;
-      int distanceCounterClockwise = (cellOne - cellTwo + numBreeds) % numBreeds;
+      int distanceClockwise = (cell2 - cell1 + numBreeds) % numBreeds;
+      int distanceCounterClockwise = (cell1 - cell2 + numBreeds) % numBreeds;
       comparison = (distanceClockwise > distanceCounterClockwise) ? 1 : -1;
     }
     return comparison;
@@ -83,26 +83,27 @@ public class Arena {
     SOUTH(1, 0),
     WEST(0, -1);
 
-    private final int rowOffSet;
-    private final int columnOffSet;
+    private final int rowOffset;
+    private final int columnOffset;
 
-    Direction(int rowOffSet, int columnOffSet) {
-      this.rowOffSet = rowOffSet;
-      this.columnOffSet = columnOffSet;
+    Direction(int rowOffset, int columnOffset) {
+      this.rowOffset = rowOffset;
+      this.columnOffset = columnOffset;
     }
 
-    public int getRowOffSet() {
-      return rowOffSet;
+    public int getRowOffset() {
+      return rowOffset;
     }
 
-    public int getColumnOffSet() {
-      return columnOffSet;
+    public int getColumnOffset() {
+      return columnOffset;
     }
 
     private static Direction random(Random rng) {
       Direction[] allDirections = Direction.values();
       return allDirections[rng.nextInt(allDirections.length)];
     }
+
   }
 
   public static class Builder {
@@ -130,7 +131,9 @@ public class Arena {
     }
 
     public Arena build() {
-      return new Arena(numBreeds, arenaSize, (rng != null) ? rng = new Random() : rng);
+      return new Arena(numBreeds, arenaSize, (rng != null) ? rng : new Random());
     }
+
   }
+
 }
