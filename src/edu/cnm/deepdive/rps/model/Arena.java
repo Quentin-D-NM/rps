@@ -56,6 +56,10 @@ public class Arena {
     return safeCopy;
   }
 
+  public byte getNumBreeds() {
+    return numBreeds;
+  }
+
   private int wrap(int value) {
     value %= arenaSize;
     return (value >= 0) ? value : value + arenaSize;
@@ -70,7 +74,6 @@ public class Arena {
       int distanceCounterClockwise = (cellOne - cellTwo + numBreeds) % numBreeds;
       comparison = (distanceClockwise > distanceCounterClockwise) ? 1 : -1;
     }
-
     return comparison;
   }
 
